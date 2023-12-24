@@ -9,6 +9,7 @@ from esphome.const import (
     CONF_PAGES,
     CONF_ADDRESS,
 )
+from esphome.const import __version__ as ESPHOME_VERSION
 
 CODEOWNERS = ["gattrill"]
 DEPENDENCIES = ["uart"]
@@ -47,7 +48,8 @@ async def to_code(config):
     cg.add(var.set_address(config[CONF_ADDRESS]))
     cg.add(var.set_offset(config[CONF_OFFSET]))
 
-    await cg.register_component(var, config)
+    if cv.Version.parse(ESPHOME_VERSION) < cv.Version.parse("2023.12.0"):
+        await cg.register_component(var, config)
     await display.register_display(var, config)
 
     if CONF_OFFSET in config:

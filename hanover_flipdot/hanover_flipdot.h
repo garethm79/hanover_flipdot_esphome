@@ -1,13 +1,18 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/core/version.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/components/display/display_buffer.h"
 
 namespace esphome {
 namespace hanover_flipdot {
 
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2023, 12, 0)
+class hanover_flipdot : public display::DisplayBuffer, public uart::UARTDevice  {
+#else
 class hanover_flipdot : public PollingComponent, public display::DisplayBuffer, public uart::UARTDevice  {
+#endif  // VERSION_CODE(2023, 12, 0)
  public:
 
   float get_setup_priority() const override { return setup_priority::PROCESSOR; }
@@ -26,6 +31,10 @@ class hanover_flipdot : public PollingComponent, public display::DisplayBuffer, 
 
   void setup() override {
     this->initialize();
+  }
+ 
+  display::DisplayType get_display_type() override {
+   return display::DisplayType::DISPLAY_TYPE_BINARY;
   }
 
  protected:
